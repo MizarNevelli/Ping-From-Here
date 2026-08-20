@@ -33,12 +33,9 @@ export function PulseLine({ latencyMs, maxLatencyMs }: PulseLineProps) {
 
   return (
     <div className="flex items-center gap-2 min-w-0 flex-1" aria-hidden>
-      {/* Signal source dot */}
       <div className="w-1.5 h-1.5 rounded-full bg-signal shrink-0" />
 
-      {/* Track */}
       <div className="relative h-px flex-1 min-w-15 max-w-30 sm:max-w-50 bg-white/5">
-        {/* Animated fill */}
         <div
           className="pulse-line absolute inset-y-0 left-0 bg-signal/60"
           style={{
@@ -46,7 +43,7 @@ export function PulseLine({ latencyMs, maxLatencyMs }: PulseLineProps) {
             transition: `width ${transitionStyle}`,
           }}
         />
-        {/* Traveling bright tip — hidden for prefers-reduced-motion via CSS */}
+        {/* hidden by CSS when prefers-reduced-motion is set */}
         <div
           className="pulse-tip absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-signal"
           style={{

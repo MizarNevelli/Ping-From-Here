@@ -11,10 +11,7 @@ export function GlobeLoader({ pendingLabel }: Props) {
       aria-live="polite"
       aria-atomic="true"
     >
-      {/* ── 3D Globe ──────────────────────────────────────────────── */}
       <div className="relative flex items-center justify-center" style={{ width: 200, height: 200 }}>
-
-        {/* Ping ripples — 2D rings radiating outward behind the globe */}
         <div
           className="absolute rounded-full border border-signal/20 animate-ping pointer-events-none"
           style={{ width: 176, height: 176, animationDuration: "2.8s" }}
@@ -24,10 +21,7 @@ export function GlobeLoader({ pendingLabel }: Props) {
           style={{ width: 176, height: 176, animationDuration: "2.8s", animationDelay: "1.4s" }}
         />
 
-        {/* Perspective container — sets the depth of field */}
         <div style={{ perspective: "640px" }}>
-
-          {/* 3D scene — children exist in shared 3D space */}
           <div
             className="globe-spinner relative"
             style={{
@@ -36,7 +30,6 @@ export function GlobeLoader({ pendingLabel }: Props) {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* Ambient radial glow at the center */}
             <div
               className="absolute inset-0 rounded-full pointer-events-none"
               style={{
@@ -45,43 +38,22 @@ export function GlobeLoader({ pendingLabel }: Props) {
               }}
             />
 
-            {/* ── Longitude ring 0° — amber meridian, most prominent ── */}
             <div
               className="absolute inset-0 rounded-full"
-              style={{
-                border: "1.5px solid rgba(245,166,35,0.75)",
-                transform: "rotateY(0deg)",
-              }}
+              style={{ border: "1.5px solid rgba(245,166,35,0.75)", transform: "rotateY(0deg)" }}
             />
-
-            {/* ── Longitude ring 60° ── */}
             <div
               className="absolute inset-0 rounded-full"
-              style={{
-                border: "1px solid rgba(94,234,212,0.45)",
-                transform: "rotateY(60deg)",
-              }}
+              style={{ border: "1px solid rgba(94,234,212,0.45)", transform: "rotateY(60deg)" }}
             />
-
-            {/* ── Longitude ring 120° ── */}
             <div
               className="absolute inset-0 rounded-full"
-              style={{
-                border: "1px solid rgba(94,234,212,0.30)",
-                transform: "rotateY(120deg)",
-              }}
+              style={{ border: "1px solid rgba(94,234,212,0.30)", transform: "rotateY(120deg)" }}
             />
-
-            {/* ── Equatorial ring (XZ plane) ── */}
             <div
               className="absolute inset-0 rounded-full"
-              style={{
-                border: "1px solid rgba(94,234,212,0.40)",
-                transform: "rotateX(90deg)",
-              }}
+              style={{ border: "1px solid rgba(94,234,212,0.40)", transform: "rotateX(90deg)" }}
             />
-
-            {/* ── Tropic rings — smaller horizontal circles ── */}
             <div
               className="absolute rounded-full"
               style={{
@@ -91,7 +63,6 @@ export function GlobeLoader({ pendingLabel }: Props) {
               }}
             />
 
-            {/* ── Center dot with glow ── */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
                 className="w-2.5 h-2.5 rounded-full bg-signal"
@@ -105,7 +76,6 @@ export function GlobeLoader({ pendingLabel }: Props) {
         </div>
       </div>
 
-      {/* ── Status label ─────────────────────────────────────────── */}
       <p className="text-mist text-xs font-mono tracking-wide">{pendingLabel}</p>
     </div>
   );

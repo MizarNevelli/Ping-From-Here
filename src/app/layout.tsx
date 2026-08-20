@@ -32,6 +32,11 @@ export const metadata: Metadata = {
     description: "How far are you from the cloud?",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ping From Here",
+    description: "How far are you from the cloud?",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

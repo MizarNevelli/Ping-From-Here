@@ -2,13 +2,9 @@ import type { LatencyResult } from "../types";
 
 const SAMPLES = 5;
 const TIMEOUT_MS = 6000;
-// Short delay between samples so TCP keep-alive isn't the only thing we measure.
-// 200ms is enough to let the connection cool slightly without materially slowing
-// down the overall page load (5 samples × 200ms = 1s overhead per region, all in
-// parallel across regions so total wall time is still bounded by the slowest region).
+// 200ms between samples lets the connection cool slightly without adding much wall time
+// (5 samples x 200ms = 1s overhead per region, all regions run in parallel).
 const INTER_SAMPLE_DELAY_MS = 200;
-
-// ── Pure helpers (no browser globals, fully unit-testable) ───────────────────
 
 export function median(values: number[]): number {
   if (values.length === 0) throw new RangeError("median() requires at least one value");
@@ -25,18 +21,19 @@ export function bustCache(url: string): string {
   return `${url}${sep}_t=${Date.now()}`;
 }
 
-// ── Browser-side helpers ─────────────────────────────────────────────────────
-
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
- * Fires a single GET request and returns the round-trip time in milliseconds.
+ * Fires a single GET and returns the round-trip time in milliseconds.
  *
- * mode: no-cors + redirect: manual → browser returns an opaque (or opaque-redirect)
- * response with status 0. The actual HTTP status is never exposed to JavaScript,
- * so Chrome never logs a "404 (Not Found)" error to the DevTools Console.
+ * no-cors: endpoint has no ACAO header (GCP, Cloudflare). Browser returns an opaque
+ * response (status 0). Chrome logs nothing to the DevTools console.
+ *
+ * default cors + redirect:manual: endpoint returns 302 (AWS STS). Browser stops before
+ * following the redirect and returns an opaque-redirect response (status 0).
+ * CORS check is skipped. Chrome logs nothing.
  *
  * Throws:
  *  - DOMException (AbortError) if the timeout fires before the response arrives
@@ -53,11 +50,6 @@ async function takeSample(
   try {
     await fetch(url, {
       method: "GET",
-      // no-cors: endpoint returns 200 without ACAO header (GCP, Cloudflare).
-      //   Browser returns opaque response (status 0) — Chrome logs nothing.
-      // default cors + redirect:manual: endpoint returns 302 (AWS STS).
-      //   Browser stops at the redirect and returns opaque-redirect (status 0) —
-      //   CORS check is skipped, Chrome logs nothing.
       ...(noCors ? { mode: "no-cors" as const } : { redirect: "manual" as const }),
       cache: "no-store",
       signal: controller.signal,
@@ -68,22 +60,19 @@ async function takeSample(
   }
 }
 
-// ── Public API ───────────────────────────────────────────────────────────────
-
 /**
  * Measures latency to a single endpoint by collecting `samples` GET requests
  * and returning the median round-trip time.
  *
- * Design notes:
- * - All samples run sequentially within a single region so that TCP keep-alive
- *   is reused for samples 2-N, isolating HTTP overhead from connection setup.
- *   The cold-start bias of sample 1 is absorbed by the median.
- * - The caller is expected to run measureLatency() for all regions concurrently
- *   (Promise.all / Promise.allSettled) so total wall time ≈ slowest region.
- * - A hard network error (TypeError) aborts immediately — retrying is unlikely
- *   to help and would only delay the UI showing an error state for that row.
- * - Timeouts (AbortError) are treated as lost samples; we keep going unless
- *   fewer than half the samples succeed.
+ * Samples run sequentially within a region so TCP keep-alive is reused for
+ * samples 2-N, isolating HTTP overhead from connection setup. The cold-start
+ * bias of sample 1 is absorbed by the median.
+ *
+ * A hard network error (TypeError) aborts immediately; retrying is unlikely
+ * to help and would only delay the UI showing an error for that row.
+ *
+ * Timeouts (AbortError) are treated as lost samples; measurement continues
+ * unless fewer than half the samples succeed.
  */
 export async function measureLatency(
   endpointUrl: string,
@@ -106,15 +95,13 @@ export async function measureLatency(
       collected.push(await takeSample(bustCache(endpointUrl), timeoutMs, noCors));
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
-        // Soft timeout — this sample is lost, try the next one.
+        // Soft timeout: sample lost, try the next one.
         continue;
       }
-      // Hard error (network failure): further retries won't help.
       return { status: "error", reason: "network" };
     }
   }
 
-  // Require at least half the requested samples to produce a reliable median.
   const minRequired = Math.ceil(samples / 2);
   if (collected.length < minRequired) {
     return {

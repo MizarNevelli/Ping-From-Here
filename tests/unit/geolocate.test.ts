@@ -46,7 +46,6 @@ describe("detectLocation", () => {
 
   test("returns null when city field is missing (common with VPN IPs)", async () => {
     stubFetch({ country_name: "Italy", country_code: "IT", latitude: 45, longitude: 9, ip: "1.2.3.4" });
-    // city is absent
     expect(await detectLocation()).toBeNull();
   });
 
@@ -55,9 +54,9 @@ describe("detectLocation", () => {
     expect(await detectLocation()).toBeNull();
   });
 
-  test("returns null on network failure — never throws", async () => {
+  test("returns null on network failure, never throws", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("Failed to fetch")));
-    // Must resolve (not reject) — callers rely on null as the error signal
+    // Must resolve (not reject); callers rely on null as the error signal.
     await expect(detectLocation()).resolves.toBeNull();
   });
 
@@ -65,7 +64,6 @@ describe("detectLocation", () => {
     stubFetch({
       city: "Unknown City",
       country_name: "Unknown Country",
-      // country_code, latitude, longitude, ip all missing
     });
 
     const result = await detectLocation();

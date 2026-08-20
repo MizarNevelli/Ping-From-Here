@@ -1,8 +1,6 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
 import { measureLatency, median, bustCache } from "@/features/ping-from-here/utils/measureLatency";
 
-// ── median ────────────────────────────────────────────────────────────────────
-
 describe("median", () => {
   test("single value returns itself", () => {
     expect(median([42])).toBe(42);
@@ -20,7 +18,6 @@ describe("median", () => {
     const input = [10, 20, 30, 40, 50];
     const result = median(input);
     expect(result).toBe(30);
-    // original array must not be sorted in place
     expect(input).toEqual([10, 20, 30, 40, 50]);
   });
 
@@ -32,8 +29,6 @@ describe("median", () => {
     expect(() => median([])).toThrow(RangeError);
   });
 });
-
-// ── bustCache ─────────────────────────────────────────────────────────────────
 
 describe("bustCache", () => {
   test("appends ?_t= to a clean URL", () => {
@@ -51,12 +46,9 @@ describe("bustCache", () => {
     const url = bustCache("https://example.com");
     const ts = Number(new URL(url).searchParams.get("_t"));
     expect(ts).toBeGreaterThanOrEqual(before);
-    // Sanity-check: not in the future by more than 50ms
     expect(ts).toBeLessThanOrEqual(Date.now() + 50);
   });
 });
-
-// ── measureLatency ────────────────────────────────────────────────────────────
 
 describe("measureLatency", () => {
   beforeEach(() => {
@@ -84,10 +76,10 @@ describe("measureLatency", () => {
     vi.stubGlobal("fetch", vi.fn(impl));
   }
 
-  // ── Happy path ──────────────────────────────────────────────────────────────
+  // happy path
 
   test("returns the median of all 5 samples on a clean run", async () => {
-    // [45, 42, 48, 46, 44] sorted → [42, 44, 45, 46, 48] → median = 45
+    // [45, 42, 48, 46, 44] sorted -> [42, 44, 45, 46, 48] -> median = 45
     mockPerformanceNow([45, 42, 48, 46, 44]);
     stubFetch(() => Promise.resolve(new Response(null, { status: 200 })));
 
@@ -117,9 +109,9 @@ describe("measureLatency", () => {
     }
   });
 
-  // ── Hard network error ──────────────────────────────────────────────────────
+  // hard network error
 
-  test("aborts immediately on a hard network error — no retries", async () => {
+  test("aborts immediately on a hard network error, no retries", async () => {
     const fetchMock = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
     vi.stubGlobal("fetch", fetchMock);
     mockPerformanceNow([]);
@@ -129,34 +121,28 @@ describe("measureLatency", () => {
     const result = await promise;
 
     expect(result).toEqual({ status: "error", reason: "network" });
-    // Critical: we called fetch exactly once, not 5 times
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  // ── Soft timeout (AbortError) ───────────────────────────────────────────────
+  // soft timeout (AbortError)
 
   test("treats AbortError as a soft timeout and continues with remaining samples", async () => {
-    // First sample times out; samples 2–5 succeed at 40ms each
     const timeout = new DOMException("The user aborted a request.", "AbortError");
     const fetchMock = vi.fn()
       .mockRejectedValueOnce(timeout)
       .mockResolvedValue(new Response(null, { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);
-    // Only 4 timing pairs (samples 2–5 each return 40ms; sample 1 threw before t1 was read)
     mockPerformanceNow([0, 40, 40, 40, 40]);
 
     const promise = measureLatency("https://example.com");
     await vi.runAllTimersAsync();
     const result = await promise;
 
-    // 4 successful samples is still ≥ ceil(5/2)=3, so we get a result
     expect(result.status).toBe("success");
-    // All 5 fetch calls were still attempted
     expect(fetchMock).toHaveBeenCalledTimes(5);
   });
 
   test("returns timeout error when fewer than ceil(samples/2) samples succeed", async () => {
-    // 4 timeouts, 1 success → only 1 sample collected, need 3 → error
     const timeout = new DOMException("Aborted", "AbortError");
     const fetchMock = vi.fn()
       .mockRejectedValueOnce(timeout)
@@ -183,14 +169,13 @@ describe("measureLatency", () => {
     await vi.runAllTimersAsync();
     const result = await promise;
 
-    // Zero collected → falls into the "network" bucket (not "timeout")
     expect(result).toEqual({ status: "error", reason: "network" });
   });
 
-  // ── Custom sample count ─────────────────────────────────────────────────────
+  // custom sample count
 
   test("respects a custom sample count", async () => {
-    mockPerformanceNow([10, 12, 11]); // 3 samples
+    mockPerformanceNow([10, 12, 11]);
     stubFetch(() => Promise.resolve(new Response(null, { status: 200 })));
 
     const promise = measureLatency("https://example.com", { samples: 3 });
@@ -203,9 +188,9 @@ describe("measureLatency", () => {
     }
   });
 
-  // ── Fetch options ────────────────────────────────────────────────────────────
+  // fetch options
 
-  test("uses redirect: manual so 3xx responses become opaque-redirect (status 0) — no console errors", async () => {
+  test("uses redirect: manual so 3xx responses become opaque-redirect (status 0), no console errors", async () => {
     mockPerformanceNow([50, 50, 50, 50, 50]);
     const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);

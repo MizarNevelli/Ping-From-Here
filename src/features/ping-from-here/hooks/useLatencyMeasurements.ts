@@ -16,20 +16,18 @@ const initialState = (): MeasurementMap =>
   );
 
 export interface LatencyMeasurementsResult {
-  /** Completed measurements (success or error), sorted by latency ascending. */
   completed: RegionMeasurement[];
-  /** Count of regions still in progress. */
   pendingCount: number;
 }
 
-export function useLatencyMeasurements(): LatencyMeasurementsResult {
-  const [state, setState] = useState<MeasurementMap>(initialState);
+export function useLatencyMeasurements(enabled: boolean): LatencyMeasurementsResult {
+  const [state, setState] = useState<MeasurementMap>({});
 
   useEffect(() => {
+    if (!enabled) return;
+    setState(initialState());
     let cancelled = false;
 
-    // All regions measured concurrently. Within each region, measureLatency()
-    // runs its samples sequentially to benefit from TCP keep-alive.
     for (const region of REGIONS) {
       measureLatency(region.endpoint, { noCors: region.noCors }).then((result) => {
         if (cancelled) return;
@@ -47,7 +45,7 @@ export function useLatencyMeasurements(): LatencyMeasurementsResult {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [enabled]);
 
   return useMemo(() => {
     const all = Object.values(state);

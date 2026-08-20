@@ -1,19 +1,18 @@
 import type { Region } from "../types";
 
-// AWS: sts.<region>.amazonaws.com returns 302 → aws.amazon.com/iam for unauthenticated
-// requests. With redirect:"manual" + no-cors the browser produces an opaque-redirect
-// response (status 0) — Chrome never logs a 4xx error to the DevTools console.
-// Timing via performance.now() captures the round-trip to the STS edge in each region.
+// AWS: sts.<region>.amazonaws.com returns 302 for unauthenticated requests.
+// With redirect:"manual" the browser stops before the redirect and returns an opaque-redirect
+// response (status 0). Chrome logs nothing to the DevTools console.
 //
 // GCP: Cloud Run instances maintained by Google DevRel (gcping.com, Apache-2 licensed,
-// https://github.com/GoogleCloudPlatform/gcping). Returns 200 → opaque no-cors response.
+// https://github.com/GoogleCloudPlatform/gcping). Returns 200, fetched with no-cors.
 // URLs snapshotted 2026-08-20 from https://global.gcping.com/api/endpoints.
 // If these start timing out after a GCP redeployment, re-fetch the API and update.
 //
-// Cloudflare: speed.cloudflare.com/__down?bytes=0 — anycast, always hits nearest PoP.
+// Cloudflare: speed.cloudflare.com/__down?bytes=0, anycast, always hits the nearest PoP.
 
 export const REGIONS: Region[] = [
-  // ── AWS ──────────────────────────────────────────────────────────────────────
+  // AWS
   {
     id: "aws-us-east-1",
     provider: "aws",
@@ -168,7 +167,7 @@ export const REGIONS: Region[] = [
     endpoint: "https://sts.me-south-1.amazonaws.com",
   },
 
-  // ── GCP (via gcping.com Cloud Run — snapshot 2026-08-20) ─────────────────────
+  // GCP (via gcping.com Cloud Run, snapshot 2026-08-20)
   {
     id: "gcp-us-east4",
     provider: "gcp",
@@ -270,7 +269,7 @@ export const REGIONS: Region[] = [
     noCors: true,
   },
 
-  // ── Cloudflare (anycast — nearest PoP) ────────────────────────────────────────
+  // Cloudflare (anycast, nearest PoP)
   {
     id: "cf-nearest",
     provider: "cloudflare",

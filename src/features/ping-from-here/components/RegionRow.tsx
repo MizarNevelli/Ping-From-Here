@@ -17,7 +17,7 @@ const PROVIDER_COLORS = {
 } as const;
 
 export function RegionRow({ rank, measurement, maxLatencyMs }: RegionRowProps) {
-  const t = useTranslations("board");
+  const t = useTranslations();
   const { region, result } = measurement;
 
   const providerLabel =
@@ -41,7 +41,7 @@ export function RegionRow({ rank, measurement, maxLatencyMs }: RegionRowProps) {
           city: cityLabel,
           latency: String(latencyMs),
         })
-      : `${rank}. ${providerLabel} ${cityLabel} — ${t("errorLabel")}`;
+      : `${rank}. ${providerLabel} ${cityLabel}, ${t("errorLabel")}`;
 
   return (
     <li
@@ -51,44 +51,36 @@ export function RegionRow({ rank, measurement, maxLatencyMs }: RegionRowProps) {
       }}
       aria-label={ariaLabel}
     >
-      {/* Rank */}
       <span className="text-mist text-xs font-mono tabular-nums">
         {String(rank).padStart(2, "0")}
       </span>
 
-      {/* Provider */}
       <span
         className={`text-xs font-mono font-medium tracking-wide ${PROVIDER_COLORS[region.provider]}`}
       >
         {providerLabel}
       </span>
 
-      {/* Region ID — hidden on small screens */}
       <span className="hidden sm:block text-xs font-mono text-mist truncate">
         {region.id.replace(/^(aws|gcp|cf)-/, "")}
       </span>
 
-      {/* City / label */}
       <span className="text-sm font-sans text-parchment truncate">{cityLabel}</span>
 
-      {/* Pulse line — spans its own column (flex-1 handled inside) */}
       <div className="flex items-center">
         {latencyMs != null ? (
           <PulseLine latencyMs={latencyMs} maxLatencyMs={maxLatencyMs} />
         ) : isError ? (
-          <span className="text-mist text-xs font-mono">— {t("errorLabel")}</span>
+          <span className="text-mist text-xs font-mono">{t("errorLabel")}</span>
         ) : null}
       </div>
 
-      {/* Latency value */}
       <div className="text-right">
         {latencyMs != null ? (
           <span className="text-parchment font-mono text-sm tabular-nums">
             {latencyMs}
             <span className="text-mist text-xs ml-0.5">{t("unitMs")}</span>
           </span>
-        ) : isError ? (
-          <span className="text-mist text-xs font-mono">—</span>
         ) : null}
       </div>
     </li>

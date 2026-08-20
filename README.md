@@ -2,7 +2,7 @@
 
 Measures your HTTP latency to 28 cloud regions across AWS, GCP, and Cloudflare, directly from your browser. No backend, no server-side processing, no data leaves your device.
 
-Live at: [pingfromhere.vercel.app](https://pingfromhere.vercel.app) _(placeholder)_
+Live at: [ping-from-here.vercel.app](https://ping-from-here.vercel.app/)
 
 ---
 

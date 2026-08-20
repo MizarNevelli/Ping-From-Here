@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/* ── Design tokens ──────────────────────────────────────────────────────────
+   Palette: nautical instrument / submarine cable map
+   ──────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Colors */
+  --color-ocean:     #0A1628; /* page background — deep ink/ocean */
+  --color-panel:     #111F35; /* card / panel surface */
+  --color-signal:    #F5A623; /* amber — radar pulse, primary accent */
+  --color-cable:     #5EEAD4; /* teal — cable lines, secondary accent */
+  --color-parchment: #F0EDE4; /* warm white — primary text */
+  --color-mist:      #8A94A6; /* secondary text */
+
+  /* Typography — CSS vars injected by next/font in layout.tsx */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans:    var(--font-inter), system-ui, sans-serif;
+  --font-mono:    var(--font-plex-mono), "Courier New", monospace;
+
+  /* Row enter animation */
+  --animate-row-enter: row-enter 0.35s ease-out both;
+}
+
+/* ── Keyframes ──────────────────────────────────────────────────────────── */
+@keyframes row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #0A1628;
+  color: #F0EDE4;
+}
+
+/* ── Pulse tip glow ─────────────────────────────────────────────────────── */
+.pulse-tip {
+  box-shadow: 0 0 6px 2px rgba(245, 166, 35, 0.45);
+}
+
+/* ── Globe spinner ──────────────────────────────────────────────────────── */
+@keyframes globe-spin {
+  from { transform: rotateX(-15deg) rotateY(0deg); }
+  to   { transform: rotateX(-15deg) rotateY(360deg); }
+}
+
+.globe-spinner {
+  animation: globe-spin 12s linear infinite;
+}
+
+/* ── Reduced motion — disable all pulse transitions ────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .pulse-line,
+  .pulse-tip {
+    transition-duration: 0ms !important;
+  }
+  .pulse-tip {
+    display: none;
+  }
+  .globe-spinner {
+    animation-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "title": "Ping From Here",
+    "description": "Measure your estimated latency to major cloud regions from wherever you're connected right now."
+  },
+  "hero": {
+    "eyebrow": "Ping From Here",
+    "tagline": "How far are you from the cloud?",
+    "description": "Measures HTTP latency to 28 cloud regions across AWS, GCP, and Cloudflare — straight from your browser.",
+    "editLocationLabel": "Edit location",
+    "locationUnknown": "Location unknown",
+    "locationUnavailable": "VPN / unknown",
+    "locationAriaLabel": "Your approximate location"
+  },
+  "board": {
+    "pendingSingular": "{n} region still measuring",
+    "pendingPlural": "{n} regions still measuring",
+    "allDone": "All regions measured",
+    "errorLabel": "unreachable",
+    "unitMs": "ms",
+    "providerAws": "AWS",
+    "providerGcp": "GCP",
+    "providerCloudflare": "CF",
+    "cloudflareEdgeNote": "nearest edge",
+    "rankLabel": "Rank {n}",
+    "rowAriaLabel": "{rank}. {provider} {city} — {latency} milliseconds"
+  },
+  "footer": {
+    "methodologyNote": "Estimated latency via HTTP HEAD requests — not ICMP ping. Each region is sampled 5 times and the median is shown, which absorbs the cold-start bias of the first request (DNS + TLS handshake). All regions are measured in parallel from your browser. No data leaves your device.",
+    "gcpAttribution": "GCP endpoints via gcping.com (Google DevRel, Apache 2.0).",
+    "cloudflareNote": "Cloudflare shows your nearest edge node, not a specific datacenter region."
+  }
+}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { LocationProvider } from "@/features/ping-from-here/providers/LocationProvider";
 import { SiteHeader } from "@/features/ping-from-here/components/SiteHeader";
 import { SiteFooter } from "@/features/ping-from-here/components/SiteFooter";
@@ -58,6 +59,7 @@ export default function RootLayout({
           {children}
           <SiteFooter />
         </LocationProvider>
+        <Analytics />
       </body>
     </html>
   );

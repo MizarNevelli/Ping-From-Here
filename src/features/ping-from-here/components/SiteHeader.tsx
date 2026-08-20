@@ -8,7 +8,7 @@ export function SiteHeader() {
   const locationState = useLocation();
 
   return (
-    <header className="sticky top-0 z-10 border-b border-white/5 bg-transparent backdrop-blur-md">
+    <header className="sticky top-0 z-10 border-b border-white/5 bg-transparent backdrop-blur-md rounded-b-3xl">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-5">
         <h1 className="font-display text-3xl sm:text-4xl text-parchment tracking-tight leading-none">
           {t("eyebrow")}

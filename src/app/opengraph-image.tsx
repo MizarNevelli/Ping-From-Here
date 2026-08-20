@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Ping From Here — How far are you from the cloud?";
+export const alt = "Ping From Here: How far are you from the cloud?";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -103,13 +103,13 @@ export default function OgImage() {
           }}
         >
           {/* Rings */}
-          {[320, 220, 140, 80].map((size, i) => (
+          {[320, 220, 140, 80].map((diameter, i) => (
             <div
               key={i}
               style={{
                 position: "absolute",
-                width: `${size}px`,
-                height: `${size}px`,
+                width: `${diameter}px`,
+                height: `${diameter}px`,
                 borderRadius: "50%",
                 border: `1px solid rgba(45, 212, 191, ${0.12 + i * 0.08})`,
               }}

@@ -8,13 +8,10 @@ export interface Region {
   lat: number;
   lon: number;
   endpoint: string;
-  /** true → fetch with mode:'no-cors' (no ACAO header on endpoint).
-   *  false/absent → fetch with default cors mode + redirect:'manual'
-   *  (endpoint returns 3xx; manual stops before following the redirect). */
   noCors?: boolean;
 }
 
-export type MeasurementStatus = "idle" | "measuring" | "done" | "error";
+export type MeasurementStatus = "measuring" | "done" | "error";
 
 export interface LatencySuccess {
   status: "success";

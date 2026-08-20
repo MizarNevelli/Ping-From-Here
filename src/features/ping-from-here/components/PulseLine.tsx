@@ -7,9 +7,7 @@ interface PulseLineProps {
   maxLatencyMs: number;
 }
 
-// Cap animation duration so even 1000ms+ regions feel purposeful, not slow.
 const MAX_ANIM_MS = 1200;
-// Minimum fill so even 1ms shows something visible.
 const MIN_FILL_PCT = 3;
 
 export function PulseLine({ latencyMs, maxLatencyMs }: PulseLineProps) {
@@ -43,7 +41,6 @@ export function PulseLine({ latencyMs, maxLatencyMs }: PulseLineProps) {
             transition: `width ${transitionStyle}`,
           }}
         />
-        {/* hidden by CSS when prefers-reduced-motion is set */}
         <div
           className="pulse-tip absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-signal"
           style={{

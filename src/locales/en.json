@@ -15,8 +15,7 @@
   "providerGcp": "GCP",
   "providerCloudflare": "CF",
   "cloudflareEdgeNote": "nearest edge",
-  "rankLabel": "Rank {n}",
-  "rowAriaLabel": "{rank}. {provider} {city}, {latency} milliseconds",
+"rowAriaLabel": "{rank}. {provider} {city}, {latency} milliseconds",
   "methodologyNote": "Estimated latency via HTTP GET requests (not ICMP ping). Each region is sampled 5 times and the median is shown, which absorbs the cold-start bias of the first request (DNS + TLS handshake). All regions are measured in parallel from your browser. No data leaves your device.",
   "gcpAttribution": "GCP endpoints via gcping.com (Google DevRel, Apache 2.0).",
   "cloudflareNote": "Cloudflare shows your nearest edge node, not a specific datacenter region."

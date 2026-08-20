@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "@/lib/i18n/useTranslations";
+import { t } from "@/lib/i18n/translations";
 import type { RegionMeasurement } from "../types";
 import { PulseLine } from "./PulseLine";
 
@@ -17,7 +17,6 @@ const PROVIDER_COLORS = {
 } as const;
 
 export function RegionRow({ rank, measurement, maxLatencyMs }: RegionRowProps) {
-  const t = useTranslations();
   const { region, result } = measurement;
 
   const providerLabel =
@@ -45,10 +44,7 @@ export function RegionRow({ rank, measurement, maxLatencyMs }: RegionRowProps) {
 
   return (
     <li
-      className="row-enter grid items-center gap-x-3 gap-y-0 py-2.5 border-b border-white/5 last:border-0"
-      style={{
-        gridTemplateColumns: "2.5rem 3rem minmax(0,7rem) minmax(0,1fr) 1fr 5rem",
-      }}
+      className="row-enter grid items-center gap-x-3 gap-y-0 py-2.5 border-b border-white/5 last:border-0 grid-cols-[2.5rem_3rem_minmax(0,1fr)_1fr_5rem] sm:grid-cols-[2.5rem_3rem_minmax(0,7rem)_minmax(0,1fr)_1fr_5rem]"
       aria-label={ariaLabel}
     >
       <span className="text-mist text-xs font-mono tabular-nums">
@@ -65,7 +61,9 @@ export function RegionRow({ rank, measurement, maxLatencyMs }: RegionRowProps) {
         {region.id.replace(/^(aws|gcp|cf)-/, "")}
       </span>
 
-      <span className="text-sm font-sans text-parchment truncate">{cityLabel}</span>
+      <span className="text-sm font-sans text-parchment truncate">
+        {cityLabel}
+      </span>
 
       <div className="flex items-center">
         {latencyMs != null ? (

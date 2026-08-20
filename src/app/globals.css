@@ -1,19 +1,15 @@
 @import "tailwindcss";
 
-/* Design tokens: nautical instrument / submarine cable map palette */
 @theme {
-  --color-ocean:     #0A1628; /* page background */
-  --color-panel:     #111F35; /* card / panel surface */
-  --color-signal:    #F5A623; /* amber, primary accent */
-  --color-cable:     #5EEAD4; /* teal, secondary accent */
-  --color-parchment: #F0EDE4; /* warm white, primary text */
-  --color-mist:      #8A94A6; /* secondary text */
-
-  /* Typography, injected by next/font in layout.tsx */
+  --color-ocean: #0a1628;
+  --color-panel: #111f35;
+  --color-signal: #f5a623;
+  --color-cable: #5eead4;
+  --color-parchment: #f0ede4;
+  --color-mist: #8a94a6;
   --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
-  --font-sans:    var(--font-inter), system-ui, sans-serif;
-  --font-mono:    var(--font-plex-mono), "Courier New", monospace;
-
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), "Courier New", monospace;
   --animate-row-enter: row-enter 0.35s ease-out both;
 }
 
@@ -34,8 +30,8 @@ html {
 }
 
 body {
-  background-color: #0A1628;
-  color: #F0EDE4;
+  background-color: #0a1628;
+  color: #f0ede4;
 }
 
 .pulse-tip {
@@ -43,8 +39,12 @@ body {
 }
 
 @keyframes globe-spin {
-  from { transform: rotateX(-15deg) rotateY(0deg); }
-  to   { transform: rotateX(-15deg) rotateY(360deg); }
+  from {
+    transform: rotateX(-15deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(-15deg) rotateY(360deg);
+  }
 }
 
 .globe-spinner {

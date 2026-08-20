@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "@/lib/i18n/useTranslations";
+import { t } from "@/lib/i18n/translations";
 import type { LocationState } from "../hooks/useDetectedLocation";
 
 interface Props {
@@ -8,8 +8,6 @@ interface Props {
 }
 
 export function LocationBadge({ locationState }: Props) {
-  const t = useTranslations();
-
   const label =
     locationState.status === "detected"
       ? `${locationState.location.city}, ${locationState.location.countryCode}`

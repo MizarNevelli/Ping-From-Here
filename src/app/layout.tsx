@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { LocationProvider } from "@/features/ping-from-here/providers/LocationProvider";
+import { SiteHeader } from "@/features/ping-from-here/components/SiteHeader";
+import { SiteFooter } from "@/features/ping-from-here/components/SiteFooter";
 import "./globals.css";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
   display: "swap",
-  // Optical size axis for display use
   axes: ["opsz", "SOFT", "WONK"],
 });
 
@@ -39,13 +41,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${inter.variable} ${ibmPlexMono.variable} h-full`}
+      className={`${fraunces.variable} ${inter.variable} ${ibmPlexMono.variable}`}
     >
-      <body className="min-h-full font-sans">{children}</body>
+      <body className="min-h-dvh font-sans">
+        <LocationProvider>
+          <SiteHeader />
+
+          {children}
+          <SiteFooter />
+        </LocationProvider>
+      </body>
     </html>
   );
 }

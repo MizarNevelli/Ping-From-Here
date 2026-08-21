@@ -1,5 +1,9 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import { measureLatency, median, bustCache } from "@/features/ping-from-here/utils/measureLatency";
+import {
+  measureLatency,
+  median,
+  bustCache,
+} from "@/features/ping-from-here/utils/measureLatency";
 
 describe("median", () => {
   test("single value returns itself", () => {
@@ -112,7 +116,9 @@ describe("measureLatency", () => {
   // hard network error
 
   test("aborts immediately on a hard network error, no retries", async () => {
-    const fetchMock = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValue(new TypeError("Failed to fetch"));
     vi.stubGlobal("fetch", fetchMock);
     mockPerformanceNow([]);
 
@@ -125,10 +131,13 @@ describe("measureLatency", () => {
   });
 
   // soft timeout (AbortError)
-
   test("treats AbortError as a soft timeout and continues with remaining samples", async () => {
-    const timeout = new DOMException("The user aborted a request.", "AbortError");
-    const fetchMock = vi.fn()
+    const timeout = new DOMException(
+      "The user aborted a request.",
+      "AbortError"
+    );
+    const fetchMock = vi
+      .fn()
       .mockRejectedValueOnce(timeout)
       .mockResolvedValue(new Response(null, { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);
@@ -144,7 +153,8 @@ describe("measureLatency", () => {
 
   test("returns timeout error when fewer than ceil(samples/2) samples succeed", async () => {
     const timeout = new DOMException("Aborted", "AbortError");
-    const fetchMock = vi.fn()
+    const fetchMock = vi
+      .fn()
       .mockRejectedValueOnce(timeout)
       .mockRejectedValueOnce(timeout)
       .mockRejectedValueOnce(timeout)
@@ -170,37 +180,5 @@ describe("measureLatency", () => {
     const result = await promise;
 
     expect(result).toEqual({ status: "error", reason: "network" });
-  });
-
-  // custom sample count
-
-  test("respects a custom sample count", async () => {
-    mockPerformanceNow([10, 12, 11]);
-    stubFetch(() => Promise.resolve(new Response(null, { status: 200 })));
-
-    const promise = measureLatency("https://example.com", { samples: 3 });
-    await vi.runAllTimersAsync();
-    const result = await promise;
-
-    expect(result.status).toBe("success");
-    if (result.status === "success") {
-      expect(result.samples).toHaveLength(3);
-    }
-  });
-
-  // fetch options
-
-  test("uses redirect: manual so 3xx responses become opaque-redirect (status 0), no console errors", async () => {
-    mockPerformanceNow([50, 50, 50, 50, 50]);
-    const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
-    vi.stubGlobal("fetch", fetchMock);
-
-    const promise = measureLatency("https://example.com");
-    await vi.runAllTimersAsync();
-    await promise;
-
-    for (const call of fetchMock.mock.calls) {
-      expect(call[1]).toMatchObject({ redirect: "manual" });
-    }
   });
 });

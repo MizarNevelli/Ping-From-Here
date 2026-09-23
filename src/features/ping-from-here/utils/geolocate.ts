@@ -75,7 +75,7 @@ function getBrowserPosition(): Promise<GeolocationPosition | "denied" | null> {
       resolve,
       (err) =>
         resolve(err.code === GeolocationPositionError.PERMISSION_DENIED ? "denied" : null),
-      { timeout: 8000, maximumAge: 300_000 }
+      { maximumAge: 300_000 }
     );
   });
 }

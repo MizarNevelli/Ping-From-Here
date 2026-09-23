@@ -52,10 +52,14 @@ export function PingBoard() {
             </div>
             <div className="space-y-2 max-w-xs">
               <p className="text-parchment text-sm font-sans">
-                {t("locationUnavailableTitle")}
+                {locationState.reason === "denied"
+                  ? t("locationDeniedTitle")
+                  : t("locationUnavailableTitle")}
               </p>
               <p className="text-mist text-xs font-sans leading-relaxed">
-                {t("locationUnavailableBody")}
+                {locationState.reason === "denied"
+                  ? t("locationDeniedBody")
+                  : t("locationUnavailableBody")}
               </p>
             </div>
           </div>

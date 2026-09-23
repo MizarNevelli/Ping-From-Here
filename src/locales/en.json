@@ -6,6 +6,8 @@
   "locating": "Locating you...",
   "locationUnavailableTitle": "Location unavailable",
   "locationUnavailableBody": "Your IP address could not be geolocated. This usually happens on a VPN, proxy, or with privacy extensions. Without a known location the results have no geographic context.",
+  "locationDeniedTitle": "Location access denied",
+  "locationDeniedBody": "Allow location access in your browser to see which cloud regions are closest to you.",
   "pendingSingular": "{n} region still measuring",
   "pendingPlural": "{n} regions still measuring",
   "allDone": "All regions measured",

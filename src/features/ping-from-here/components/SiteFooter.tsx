@@ -4,10 +4,10 @@ export function SiteFooter() {
   return (
     <footer className="max-w-3xl mx-auto px-4 sm:px-6 pb-10 space-y-2">
       <div className="h-px bg-white/8" />
-      <p className="text-mist text-xs font-sans leading-relaxed pt-2">
+      <p className="text-mist text-xs font-sans leading-relaxed pt-3">
         {t("methodologyNote")}
       </p>
-      <p className="text-mist text-xs font-sans">
+      <p className="text-mist text-xs font-sans pb-5">
         {t("gcpAttribution")} {t("cloudflareNote")}
       </p>
       <div className="pt-5 border-t border-white/5 flex justify-center">

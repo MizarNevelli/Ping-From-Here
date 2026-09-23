@@ -7,10 +7,12 @@ export interface DetectedLocation {
   ip: string;
 }
 
+export type LocationResult = DetectedLocation | "denied" | null;
+
 const SESSION_KEY = "pfh:location";
 
 // In-flight deduplication: concurrent callers share the same promise.
-let inflight: Promise<DetectedLocation | null> | null = null;
+let inflight: Promise<LocationResult> | null = null;
 
 function persist(location: DetectedLocation): void {
   try {
@@ -63,7 +65,7 @@ async function reverseGeocode(
   }
 }
 
-function getBrowserPosition(): Promise<GeolocationPosition | null> {
+function getBrowserPosition(): Promise<GeolocationPosition | "denied" | null> {
   return new Promise((resolve) => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
       resolve(null);
@@ -71,14 +73,16 @@ function getBrowserPosition(): Promise<GeolocationPosition | null> {
     }
     navigator.geolocation.getCurrentPosition(
       resolve,
-      () => resolve(null),
+      (err) =>
+        resolve(err.code === GeolocationPositionError.PERMISSION_DENIED ? "denied" : null),
       { timeout: 8000, maximumAge: 300_000 }
     );
   });
 }
 
-async function fetchBrowserGeolocation(): Promise<DetectedLocation | null> {
+async function fetchBrowserGeolocation(): Promise<LocationResult> {
   const pos = await getBrowserPosition();
+  if (pos === "denied") return "denied";
   if (!pos) return null;
   const { latitude, longitude } = pos.coords;
   const { city, country, countryCode } = await reverseGeocode(latitude, longitude);
@@ -86,9 +90,9 @@ async function fetchBrowserGeolocation(): Promise<DetectedLocation | null> {
 }
 
 // Best-effort geolocation: tries ipapi.co first, falls back to browser Geolocation API.
-// Returns null on any failure; callers must handle the null case.
-// Result is cached in sessionStorage so each browser tab calls external services at most once.
-export async function detectLocation(): Promise<DetectedLocation | null> {
+// "denied" means the user explicitly refused the browser permission prompt.
+// Successful results are cached in sessionStorage so each tab calls external services at most once.
+export async function detectLocation(): Promise<LocationResult> {
   try {
     const cached = sessionStorage.getItem(SESSION_KEY);
     if (cached) return JSON.parse(cached) as DetectedLocation;
@@ -107,12 +111,10 @@ export async function detectLocation(): Promise<DetectedLocation | null> {
       }
 
       const browserResult = await fetchBrowserGeolocation();
-      if (browserResult) {
+      if (browserResult && browserResult !== "denied") {
         persist(browserResult);
-        return browserResult;
       }
-
-      return null;
+      return browserResult;
     } finally {
       inflight = null;
     }

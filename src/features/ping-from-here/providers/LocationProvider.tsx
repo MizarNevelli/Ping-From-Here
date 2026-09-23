@@ -1,7 +1,10 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { useDetectedLocation, type LocationState } from "../hooks/useDetectedLocation";
+import {
+  useDetectedLocation,
+  type LocationState,
+} from "../hooks/useDetectedLocation";
 
 const LocationContext = createContext<LocationState>({ status: "detecting" });
 

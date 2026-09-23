@@ -20,26 +20,31 @@ export interface LatencyMeasurementsResult {
   pendingCount: number;
 }
 
-export function useLatencyMeasurements(enabled: boolean): LatencyMeasurementsResult {
+export function useLatencyMeasurements(
+  enabled: boolean
+): LatencyMeasurementsResult {
   const [state, setState] = useState<MeasurementMap>({});
 
   useEffect(() => {
     if (!enabled) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setState(initialState());
     let cancelled = false;
 
     for (const region of REGIONS) {
-      measureLatency(region.endpoint, { noCors: region.noCors }).then((result) => {
-        if (cancelled) return;
-        setState((prev) => ({
-          ...prev,
-          [region.id]: {
-            region,
-            measurementStatus: result.status === "success" ? "done" : "error",
-            result,
-          },
-        }));
-      });
+      measureLatency(region.endpoint, { noCors: region.noCors }).then(
+        (result) => {
+          if (cancelled) return;
+          setState((prev) => ({
+            ...prev,
+            [region.id]: {
+              region,
+              measurementStatus: result.status === "success" ? "done" : "error",
+              result,
+            },
+          }));
+        }
+      );
     }
 
     return () => {
@@ -52,8 +57,10 @@ export function useLatencyMeasurements(enabled: boolean): LatencyMeasurementsRes
     const completed = all
       .filter((m) => m.measurementStatus !== "measuring")
       .sort((a, b) => {
-        const msA = a.result?.status === "success" ? a.result.medianMs : Infinity;
-        const msB = b.result?.status === "success" ? b.result.medianMs : Infinity;
+        const msA =
+          a.result?.status === "success" ? a.result.medianMs : Infinity;
+        const msB =
+          b.result?.status === "success" ? b.result.medianMs : Infinity;
         return msA - msB;
       });
     return {

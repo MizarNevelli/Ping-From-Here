@@ -11,14 +11,22 @@ export function GlobeLoader({ pendingLabel }: Props) {
       aria-live="polite"
       aria-atomic="true"
     >
-      <div className="relative flex items-center justify-center" style={{ width: 200, height: 200 }}>
+      <div
+        className="relative flex items-center justify-center"
+        style={{ width: 200, height: 200 }}
+      >
         <div
           className="absolute rounded-full border border-signal/20 animate-ping pointer-events-none"
           style={{ width: 176, height: 176, animationDuration: "2.8s" }}
         />
         <div
           className="absolute rounded-full border border-cable/15 animate-ping pointer-events-none"
-          style={{ width: 176, height: 176, animationDuration: "2.8s", animationDelay: "1.4s" }}
+          style={{
+            width: 176,
+            height: 176,
+            animationDuration: "2.8s",
+            animationDelay: "1.4s",
+          }}
         />
 
         <div style={{ perspective: "640px" }}>
@@ -40,19 +48,31 @@ export function GlobeLoader({ pendingLabel }: Props) {
 
             <div
               className="absolute inset-0 rounded-full"
-              style={{ border: "1.5px solid rgba(245,166,35,0.75)", transform: "rotateY(0deg)" }}
+              style={{
+                border: "1.5px solid rgba(245,166,35,0.75)",
+                transform: "rotateY(0deg)",
+              }}
             />
             <div
               className="absolute inset-0 rounded-full"
-              style={{ border: "1px solid rgba(94,234,212,0.45)", transform: "rotateY(60deg)" }}
+              style={{
+                border: "1px solid rgba(94,234,212,0.45)",
+                transform: "rotateY(60deg)",
+              }}
             />
             <div
               className="absolute inset-0 rounded-full"
-              style={{ border: "1px solid rgba(94,234,212,0.30)", transform: "rotateY(120deg)" }}
+              style={{
+                border: "1px solid rgba(94,234,212,0.30)",
+                transform: "rotateY(120deg)",
+              }}
             />
             <div
               className="absolute inset-0 rounded-full"
-              style={{ border: "1px solid rgba(94,234,212,0.40)", transform: "rotateX(90deg)" }}
+              style={{
+                border: "1px solid rgba(94,234,212,0.40)",
+                transform: "rotateX(90deg)",
+              }}
             />
             <div
               className="absolute rounded-full"
@@ -76,7 +96,9 @@ export function GlobeLoader({ pendingLabel }: Props) {
         </div>
       </div>
 
-      <p className="text-mist text-xs font-mono tracking-wide">{pendingLabel}</p>
+      <p className="text-mist text-xs font-mono tracking-wide">
+        {pendingLabel}
+      </p>
     </div>
   );
 }

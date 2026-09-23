@@ -15,7 +15,9 @@ export function useDetectedLocation(): LocationState {
     let cancelled = false;
     detectLocation().then((loc) => {
       if (cancelled) return;
-      setState(loc ? { status: "detected", location: loc } : { status: "unavailable" });
+      setState(
+        loc ? { status: "detected", location: loc } : { status: "unavailable" }
+      );
     });
     return () => {
       cancelled = true;

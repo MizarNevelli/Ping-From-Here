@@ -10,7 +10,9 @@ interface Props {
 export function LocationBadge({ locationState }: Props) {
   const label =
     locationState.status === "detected"
-      ? `${locationState.location.city}, ${locationState.location.countryCode}`
+      ? locationState.location.city
+        ? `${locationState.location.city}, ${locationState.location.countryCode}`
+        : `${locationState.location.latitude.toFixed(1)}°, ${locationState.location.longitude.toFixed(1)}°`
       : locationState.status === "detecting"
         ? "…"
         : t("locationUnavailable");
